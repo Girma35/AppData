@@ -77,7 +77,11 @@ app.post('/api/recipes', async (req, res) => {
 app.get('/api/Recipes/:id', async (req, res) => {
  
   try {
+<<<<<<< HEAD
     const id = req.params.id.trim();
+=======
+   const id = req.params.id.trim();
+>>>>>>> Back-end
     const recipes = await Recipe.findById(id);
     res.status(200).json(recipes);
   } catch (error) {
