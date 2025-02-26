@@ -64,3 +64,6 @@ To contribute, fork the repository, create a feature branch, make your changes, 
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
+
+mongo Db access (only for the owner):
+https://cloud.mongodb.com/v2/67bcddcab0942156c2fe1f53#/security/network/accessList
