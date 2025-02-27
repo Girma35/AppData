@@ -1,17 +1,19 @@
 const express = require('express')
 const mongoose = require('mongoose');
 const Recipe = require('./model/recipe.model.js')
-require('dotenv').config();
+const helmet = require('helmet')
+const cors = require('cors')
+require('dotenv').config()
 
 
 
-
-// middle ware
+//middle ware
 
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
-
+app.use(helmet());
+app.use(cors())
 
 
 PORT = 3000
@@ -37,6 +39,7 @@ async function connectToDatabase() {
 
 // calling the function
 connectToDatabase()
+
 
 app.get('/',(req,res) =>{
 res.send('welcome to nodejs application');
@@ -75,14 +78,13 @@ app.post('/api/recipes', async (req, res) => {
 
 
 app.get('/api/Recipes/:id', async (req, res) => {
- 
-  try {
-<<<<<<< HEAD
-    const id = req.params.id.trim();
-=======
-   const id = req.params.id.trim();
->>>>>>> Back-end
+ try {
+    
+  const id = req.params.id.trim();
     const recipes = await Recipe.findById(id);
+    if (! recipes){
+      return res.status(500).json({message:'The recipes is not found'})
+    }
     res.status(200).json(recipes);
   } catch (error) {
     if (error.name === 'ValidationError') {
