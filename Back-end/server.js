@@ -1,136 +1,84 @@
-const express = require('express')
+const express = require('express');
 const mongoose = require('mongoose');
-const Recipe = require('./model/recipe.model.js')
-const helmet = require('helmet')
-const cors = require('cors')
-require('dotenv').config()
+const helmet = require('helmet');
+const cors = require('cors');
+const controllerRecipe = require('./controller/loggerMiddleware.js');
+const signup = require('./controller/signup.js');
+require('dotenv').config();
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
+const passport = require('passport');
+require('./strategy/local.js');
+const flash = require('connect-flash');
+
+const app = express();
 
 
-
-//middle ware
-
-const app = express()
-app.use(express.json())
+const PORT = 3000;
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
-app.use(cors())
-
-
-PORT = 3000
-
-
-// connect the database 
-// function
+app.use(cors());
 async function connectToDatabase() {
     try {
-      await mongoose.connect(process.env.MONGODB_URI, {
-      });
-      app.listen(PORT)
-      console.log('Connected to MongoDB!');
-      console.log('The server is running  on  port ' + PORT)
+        await mongoose.connect(process.env.MONGODB_URI
+        );
+
+
+        //sessions 
+
+        const store = new MongoDBStore({
+            uri: process.env.MONGODB_URI,
+            collection: 'sessions',
+        });
+
+        store.on('error', (error) => {
+            console.error('Session store error:', error);
+        });
+
+        app.use(session({
+            secret: process.env.SESSION_SECRET,
+            cookie: {
+                maxAge: 1000 * 60 * 60 * 24 * 7,
+            },
+            store: store,
+            resave: false,
+            saveUninitialized: false,
+        }));
+
+        app.use(flash());
+        app.use(passport.initialize());
+        app.use(passport.session());
+
+
+        //controllers
+
+        app.get('/', controllerRecipe.Home);
+        app.get('/api/Recipes', controllerRecipe.viewRecipe);
+        app.post('/api/recipes', controllerRecipe.recieveData);
+        app.get('/api/Recipes/:id', controllerRecipe.viewById);
+        app.put('/api/Recipes/:id', controllerRecipe.updateRecipe);
+        app.delete('/api/Recipes/:id', controllerRecipe.deleteRecipe);
+        app.post('/api/signup',signup);
+
+    app.post('/api/auth',passport.authenticate('local'),
+            (req, res) => {
+                res.status(200).json({ message: 'Login successful', user: req.user });
+            }
+        );
+
+
+
+        app.listen(PORT, () => {
+            console.log('Connected to MongoDB!');
+            console.log('The server is running on port ' + PORT);
+        });
+
 
     } catch (error) {
-      console.error('Error connecting to MongoDB:', error);
+        console.error('Error connecting to MongoDB:', error);
     }
-  }
-
-
-  
-
-// calling the function
-connectToDatabase()
-
-
-app.get('/',(req,res) =>{
-res.send('welcome to nodejs application');
 }
-);
 
-
-app.get('/api/Recipes', async (req, res) => {
-  try {
-    const recipes = await Recipe.find({});
-    res.status(200).json(recipes);
-  } catch (error) {
-    if (error.name === 'ValidationError') {
-      res.status(400).json({ message: "Validation error", errors: error.errors });
-    } else {
-      res.status(500).json({ message: "Internal server error", error: error.message });
-    }
-  }
-});
-
-
-
-app.post('/api/recipes', async (req, res) => {
-  try {
-    const recipe = await Recipe.create(req.body);
-    res.status(201).json(recipe);
-  } catch (error) {
-    if (error.name === 'ValidationError') {
-      res.status(400).json({ message: "Validation error", errors: error.errors });
-    } else {
-      res.status(500).json({ message: "Internal server error", error: error.message });
-    }
-  }
-});
-
-
-
-app.get('/api/Recipes/:id', async (req, res) => {
- try {
-    
-  const id = req.params.id.trim();
-    const recipes = await Recipe.findById(id);
-    if (! recipes){
-      return res.status(500).json({message:'The recipes is not found'})
-    }
-    res.status(200).json(recipes);
-  } catch (error) {
-    if (error.name === 'ValidationError') {
-      res.status(400).json({ message: "Validation error", errors: error.errors });
-    } else {
-      res.status(500).json({ message: "Internal server error", error: error.message });
-    }
-  }
-
-});
-
-
-
-app.put('/api/Recipes/:id', async (req, res) => {
-  try {
-    const id = req.params.id.trim();
-    const updatedRecipe = await Recipe.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
-    if (!updatedRecipe) {
-      return res.status(404).json({ message: 'The recipe not found' });
-    }
-    res.status(200).json(updatedRecipe);
-  } catch (error) {
-    if (error.name === 'ValidationError') {
-      res.status(400).json({ message: "Validation error", errors: error.errors });
-    } else {
-      res.status(500).json({ message: "Internal server error", error: error.message });
-    }
-  }
-});
-
-
-
-app.delete('/api/Recipes/:id', async (req, res) => {
-  try {
-    const id = req.params.id.trim();
-    const deletedRecipe = await Recipe.findByIdAndDelete(id);
-    if (!deletedRecipe) {
-      return res.status(404).json({ message: 'The recipe not found' });
-    }
-    res.status(200).json({message:'The Recipe delted Successfully'});
-  } catch (error) {
-    if (error.name === 'ValidationError') {
-      res.status(400).json({ message: "Validation error", errors: error.errors });
-    } else {
-      res.status(500).json({ message: "Internal server error", error: error.message });
-    }
-  }
-});
+connectToDatabase();
 
