@@ -89,13 +89,44 @@ async function viewById (req, res) {
   }
 
 
-  module.exports = {
-    Home,
-    viewRecipe,
-    viewById,
-    recieveData,
-    updateRecipe,
-    deleteRecipe,
-  };
-
+  async function Search(req, res) {
+    console.log('in the search route');
   
+    try {
+
+      const title = req.body.title?.trim();
+
+      if (!title) {
+        return res.status(400).json({ error: 'Title query parameter is required' });
+      }
+
+
+     const resultRecipe = await Recipe.find({
+      title: { $regex: title, $options: 'i' }
+    });
+  
+
+     if (resultRecipe.length === 0) {
+      return res.status(400).json({ error: 'No recipe was found' });
+    }
+
+    res.status(200).json(resultRecipe);
+
+    } catch (error) {
+
+      console.error('Search error:', error);
+      res.status(500).json({ error: 'Server error' });
+
+    }
+  }
+
+
+module.exports = {
+  Home,
+  viewRecipe,
+  viewById,
+  recieveData,
+  updateRecipe,
+  deleteRecipe,
+  Search,
+};

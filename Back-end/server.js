@@ -10,6 +10,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const passport = require('passport');
 require('./strategy/local.js');
 const flash = require('connect-flash');
+const qs = require('qs');
 
 const app = express();
 
@@ -59,13 +60,46 @@ async function connectToDatabase() {
         app.get('/api/Recipes/:id', controllerRecipe.viewById);
         app.put('/api/Recipes/:id', controllerRecipe.updateRecipe);
         app.delete('/api/Recipes/:id', controllerRecipe.deleteRecipe);
-        app.post('/api/signup',signup);
+        
+        app.post('/search',controllerRecipe.Search);
 
+
+
+        // auth
+  app.post('/api/signup',signup);
     app.post('/api/auth',passport.authenticate('local'),
             (req, res) => {
                 res.status(200).json({ message: 'Login successful', user: req.user });
             }
         );
+
+
+        // debugging endpoint  check the status 
+
+        app.get('/api/auth/status',(req,res)=>{
+            console.log('inside status');
+            req.user ?  console.log(req.user) :console.log('no user loged in ');
+            return req.user? res.send(req.user):res.sendStatus(401);
+        })
+
+        app.post('/api/auth/logout', function(req, res, next) {
+            if (!req.user) {
+              return res.sendStatus(401); // Unauthorized if no user is logged in
+            }
+          
+            req.logout(function(err) {
+              if (err) {
+                return res.sendStatus(400); // Bad Request if logout fails
+              }
+          
+              // Logout succeeded, now redirect to Auth0 logout
+              var params = {
+                client_id: process.env['AUTH0_CLIENT_ID'],
+                returnTo: 'http://localhost:3000/'
+              };
+              res.redirect('https://' + process.env['AUTH0_DOMAIN'] + '/v2/logout?' + qs.stringify(params));
+            });
+          });
 
 
 

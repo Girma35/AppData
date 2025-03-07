@@ -1,0 +1,46 @@
+# Compiled source files
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+*.class
+*.pyc
+*.pyo
+
+# Log files
+*.log
+
+# Dependency directories
+node_modules/
+venv/
+env/
+.venv/
+.gradle/
+target/
+build/
+dist/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE specific files
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Temporary files
+*~
+\#*#
+*.bak
+*.tmp
+
+# Secrets
+.env
+*.pem
+*.key
