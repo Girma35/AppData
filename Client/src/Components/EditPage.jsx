@@ -3,7 +3,8 @@ import Search from './Search';
 import ChooseItem from "./ChooseItem";
 import { useNavigate } from "react-router-dom";
 
-const NewRecipePages = () => {
+
+const EditPage = () => {
     const navigate=useNavigate();
     const [inputs, setInput] = useState({
         title: "",
@@ -28,7 +29,7 @@ const NewRecipePages = () => {
         e.preventDefault();
         console.log(inputs);
         alert("THE SUCCESSFULLY CREATED!");
-        navigate('/Dashboard');
+        navigate('/Showpage')
     };
 
     return (
@@ -38,24 +39,24 @@ const NewRecipePages = () => {
                 <div className="w-full bg-white h-20 border ">
                     <p className="float-left text-sm p-2">Welcome AppData</p>
                     <div className="flex gap-8"><h1 className="text-center md:text-3xl mt-6 ml-32">AppData</h1>
-                    <div className="float-right md:block sm:hidden bg-slate-100 mr-1 m-auto">
+                    <div className="float-right  bg-slate-100 mr-1 m-auto">
                         <Search />
-                    </div>Edit Recipe
+                    </div>
                     </div>
                    
-                    <div className="float-left  p-2">
-                        <p className="text-xs font-bold">Create New Recipe</p>
+                    <div className="float-left p-2">
+                        <p className="text-xs mb-2 font-bold">Create New Recipe</p>
                     </div>
                 </div>
-                    <div className="w-full sm:hidden md:block bg-gray-200 h-10 sm:h-16 border">
+                <div className="w-full sm:hidden md:block bg-gray-200 h-10 sm:h-16 border">
                     <div className="text-xs ml-3 h-full flex items-center">
                         <ChooseItem />
                     </div>
                     </div>
-                            
+                                
                 <div className="w-full h-auto pt-4 bg-rose-400 mx-auto pb-12">
                     <div className="w-full max-w-[1300px] h-auto bg-white mx-auto text-black p-4">
-                        <h1 className="text-center m-2 font-bold text-3xl text-black">Create New Recipe</h1>
+                        <h1 className="text-center m-2 font-bold text-3xl text-black">Edit Recipe</h1>
                         <form onSubmit={submithandler} className="m-4">
                          
                             <label htmlFor="title" className="block mb-4">
@@ -96,11 +97,6 @@ const NewRecipePages = () => {
                                     onChange={changehandler}
                                     value={inputs.description}
                                 />
-                                </label>
-    
-                  
-                                <label htmlFor="ingredients" className="block mb-4">
-                                    Ingred
                             </label>
 
               
@@ -143,9 +139,8 @@ const NewRecipePages = () => {
                           
                             <button
                                 type="submit"
-                                className="bg-orange-300 text-black text-center w-full sm:w-24 p-2 font-bold"
-                            >
-                                Creacte
+                                className="bg-orange-300 justify-items-center text-black text-center w-full sm:w-24 p-2 font-bold">
+                                Confirm
                             </button>
                         </form>
                     </div>
@@ -155,4 +150,4 @@ const NewRecipePages = () => {
     );
 };
 
-export default NewRecipePages;
+export default EditPage;

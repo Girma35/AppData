@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import {Link } from "react-router-dom";
+import {Link, useNavigate } from "react-router-dom";
 import Search from './Search';
 
 
+
+
 const SignInUp = () => {
+   const navigate=useNavigate();
    
-    const messages = {
-        message: 'Login'
-    };
 
     const [inputs, setInputs] = useState({
         username: '',
@@ -23,7 +23,8 @@ const SignInUp = () => {
     const submitHandler = (e) => {
         e.preventDefault();
         console.log(inputs);
-        alert(`SUCCESS! Signed up! Let's start sharing and discovering recipes! ${messages.message}`);
+        alert(`SUCCESS! Login now! ` )
+        navigate('/Login');
     };
 
     return (

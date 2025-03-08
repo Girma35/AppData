@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 import Search from './Search';
 
 const Login = () => {
+    const navigate=useNavigate();
   
     const [inputs, setInputs] = useState({
         username: '',
@@ -18,6 +19,7 @@ const Login = () => {
         e.preventDefault();
         console.log(inputs);
         alert(`SUCCESS! Login! Let's start sharing and discovering recipes! `);
+        navigate('/Dashboard')
     };
 
     return (

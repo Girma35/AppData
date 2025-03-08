@@ -4,6 +4,8 @@ import Dashboard from "./Components/Dashboard";
 import NewRecipePages from "./Components/NewRecipePages";
 import Login from "./Components/Login";
 import ChooseItem from "./Components/ChooseItem";
+import Showpage from "./Components/Showpage";
+import EditPage from "./Components/EditPage";
 
 
 const App = () => {
@@ -13,11 +15,13 @@ const App = () => {
       <BrowserRouter>
         <Routes>
         <Route path="/" element={<SignInUp/>} />
+        
         <Route path="/login" element={<Login/>} />
-
-        <Route path="chooseitem" element={<ChooseItem/>} />
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="newrecipePages" element={<NewRecipePages/>} />
+        <Route path="/editpage" element={<EditPage/>} />
+        <Route path="/showpage" element={<Showpage/>} />
+        <Route path="/chooseitem" element={<ChooseItem/>} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/newrecipePages" element={<NewRecipePages/>} />
           
           
         </Routes>
